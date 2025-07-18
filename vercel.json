@@ -16,8 +16,8 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "@vite_api_url",
-    "VITE_SUPABASE_URL": "@vite_supabase_url",
-    "VITE_SUPABASE_ANON_KEY": "@vite_supabase_anon_key"
+    "VITE_API_URL": "https://web-production-6ce0.up.railway.app/api",
+    "VITE_SUPABASE_URL": "https://xjzfeyymqucrtktdqjbs.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhqemZleXltcXVjcnRrdGRxamJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MTUyNjQsImV4cCI6MjA2ODM5MTI2NH0.TxQYnY6XOuIeiQkLv80twHpsk3kyswB4l4r_TTFJYXE"
   }
 }
