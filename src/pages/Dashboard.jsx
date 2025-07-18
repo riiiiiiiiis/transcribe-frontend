@@ -3,7 +3,7 @@ import AddVideoForm from '../components/AddVideoForm'
 import VideoGrid from '../components/VideoGrid'
 import TimeSavedCounter from '../components/TimeSavedCounter'
 import { useVideos } from '../hooks/useVideos'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 const Dashboard = () => {
   const { videos, isLoading, error, refetch } = useVideos()

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Copy, ExternalLink, Clock, Calendar, Loader, Brain, Sparkles } from 'lucide-react'
 import { getTranscript, API_BASE, setVideoRating, regenerateInsights } from '../services/api'
@@ -19,7 +19,7 @@ const InsightsContent = ({ content }) => {
     <div className="space-y-8">
       {/* Small cards in grid layout for sections with less content */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sections.filter((section, index) => {
+        {sections.filter((section) => {
           const lines = section.trim().split('\n')
           const contentText = lines.slice(1).join('\n')
           return contentText.length < 500 // Short sections get grid layout
@@ -46,7 +46,7 @@ const InsightsContent = ({ content }) => {
                 ">
                 <ReactMarkdown
                   components={{
-                    h1: ({children}) => null,
+                    h1: () => null,
                     h2: ({children}) => <h4 className="text-base font-semibold text-slate-800 mt-3 mb-2">{children}</h4>,
                     h3: ({children}) => <h5 className="text-sm font-semibold text-slate-700 mt-2 mb-1">{children}</h5>,
                     ul: ({children}) => <ul className="space-y-1">{children}</ul>,
@@ -73,7 +73,7 @@ const InsightsContent = ({ content }) => {
 
       {/* Full-width cards for longer sections */}
       <div className="space-y-6">
-        {sections.filter((section, index) => {
+        {sections.filter((section) => {
           const lines = section.trim().split('\n')
           const contentText = lines.slice(1).join('\n')
           return contentText.length >= 500 // Long sections get full width
@@ -105,7 +105,7 @@ const InsightsContent = ({ content }) => {
                 ">
                 <ReactMarkdown
                   components={{
-                    h1: ({children}) => null,
+                    h1: () => null,
                     h2: ({children}) => <h4 className="text-lg font-semibold text-blue-800 mt-4 mb-2">{children}</h4>,
                     h3: ({children}) => <h5 className="text-base font-semibold text-blue-700 mt-3 mb-2">{children}</h5>,
                     ul: ({children}) => <ul className="space-y-2">{children}</ul>,
@@ -149,6 +149,17 @@ const TranscriptView = () => {
   const pollingTimeoutRef = useRef(null)
   const isMountedRef = useRef(true)
 
+  const loadTranscript = useCallback(async () => {
+    try {
+      const data = await getTranscript(videoId)
+      setVideo(data)
+    } catch (error) {
+      console.error('Ошибка загрузки транскрипта:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [videoId])
+
   useEffect(() => {
     loadTranscript()
     
@@ -160,18 +171,7 @@ const TranscriptView = () => {
         pollingTimeoutRef.current = null
       }
     }
-  }, [videoId])
-
-  const loadTranscript = async () => {
-    try {
-      const data = await getTranscript(videoId)
-      setVideo(data)
-    } catch (error) {
-      console.error('Ошибка загрузки транскрипта:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [videoId, loadTranscript])
 
   const copyToClipboard = async () => {
     try {

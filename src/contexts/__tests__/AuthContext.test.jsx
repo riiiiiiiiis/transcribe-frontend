@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { AuthProvider, useAuth } from '../AuthContext'
+import { AuthProvider } from '../AuthContextProvider'
+import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
 
 // Тестовый компонент для использования хука

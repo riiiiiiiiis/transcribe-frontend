@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { getErrorMessage } from '../utils/errorHandling'
 
 const AuthForm = () => {
@@ -45,14 +45,14 @@ const AuthForm = () => {
 
     try {
       if (isSignUp) {
-        const { data, error } = await signUp(email, password)
+        const { error } = await signUp(email, password)
         if (error) {
           setFormError(getErrorMessage(error))
         } else {
           setMessage('Проверьте вашу почту для подтверждения регистрации!')
         }
       } else {
-        const { data, error } = await signIn(email, password)
+        const { error } = await signIn(email, password)
         if (error) {
           setFormError(getErrorMessage(error))
         }
@@ -72,7 +72,7 @@ const AuthForm = () => {
       return
     }
 
-    const { data, error } = await resetPassword(email)
+    const { error } = await resetPassword(email)
     if (error) {
       setFormError(getErrorMessage(error))
     } else {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getVideos } from '../services/api'
-import { getErrorMessage, isNetworkError, isAuthError } from '../utils/errorHandling'
+import { getErrorMessage, isNetworkError } from '../utils/errorHandling'
 
 export const useVideos = () => {
   const [videos, setVideos] = useState([])
