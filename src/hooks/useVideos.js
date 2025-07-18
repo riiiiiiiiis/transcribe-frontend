@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getVideos } from '../services/api'
+import { getErrorMessage, isNetworkError, isAuthError } from '../utils/errorHandling'
 
 export const useVideos = () => {
   const [videos, setVideos] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [retryCount, setRetryCount] = useState(0)
 
-  const loadVideos = useCallback(async () => {
+  const loadVideos = useCallback(async (isRetry = false) => {
     try {
-      // Only show loading on initial load
-      if (videos.length === 0) {
+      // Only show loading on initial load or manual retry
+      if (videos.length === 0 || isRetry) {
         setIsLoading(true)
       }
       
@@ -28,14 +30,26 @@ export const useVideos = () => {
       })
       
       setError(null)
+      setRetryCount(0) // Reset retry count on success
     } catch (err) {
-      setError(err.message)
+      console.error('Error loading videos:', err)
+      const errorMessage = getErrorMessage(err)
+      setError(errorMessage)
+      
+      // Автоматическая повторная попытка для сетевых ошибок
+      if (isNetworkError(err) && retryCount < 3) {
+        console.log(`Автоматическая повторная попытка ${retryCount + 1}/3`)
+        setTimeout(() => {
+          setRetryCount(prev => prev + 1)
+          loadVideos(true)
+        }, 2000 * (retryCount + 1)) // Увеличиваем задержку с каждой попыткой
+      }
     } finally {
-      if (videos.length === 0) {
+      if (videos.length === 0 || isRetry) {
         setIsLoading(false)
       }
     }
-  }, [videos.length])
+  }, [videos.length, retryCount])
 
   useEffect(() => {
     loadVideos()
